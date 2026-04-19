@@ -28,7 +28,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (username: string, password: string) => {
     try {
-      const response = await fetch('http://localhost:3000/trpc/auth.login', {
+      const response = await fetch('https://3000-iol4fk8egqty4vkcqygvg-3f540a54.us2.manus.computer/api/trpc/auth.login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
