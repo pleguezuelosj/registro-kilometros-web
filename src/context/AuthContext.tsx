@@ -28,11 +28,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (username: string, password: string) => {
     try {
-      // tRPC expects the input in a specific format
-      const input = JSON.stringify({ username, password });
+      // tRPC expects input as a query parameter with proper JSON format
+      const input = { username, password };
+      const inputParam = JSON.stringify(input);
       
       const response = await fetch(
-        `https://registro-kilometros-app.onrender.com/api/trpc/auth.login?input=${encodeURIComponent(input)}`,
+        `https://registro-kilometros-app.onrender.com/api/trpc/auth.login?input=${inputParam}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
