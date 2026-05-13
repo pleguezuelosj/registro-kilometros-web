@@ -28,22 +28,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (username: string, password: string) => {
     try {
-      const response = await fetch('https://registro-kilometros-app.onrender.com/api/trpc/auth.login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
+      // tRPC expects the input in a specific format
+      const input = JSON.stringify({ username, password });
+      
+      const response = await fetch(
+        `https://registro-kilometros-app.onrender.com/api/trpc/auth.login?input=${encodeURIComponent(input)}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+        }
+      );
 
-      if (!response.ok) throw new Error('Login failed');
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Login response error:', response.status, errorText);
+        throw new Error(`Login failed with status ${response.status}`);
+      }
       
       const data = await response.json();
-      const result = data.result?.data;
+      console.log('Login response:', data);
+      
+      // tRPC wraps the result in a specific structure
+      const result = data.result?.data || data.result;
 
       if (result?.token && result?.user) {
         setToken(result.token);
         setUser(result.user);
         localStorage.setItem('supervisorToken', result.token);
         localStorage.setItem('supervisorUser', JSON.stringify(result.user));
+      } else {
+        throw new Error('Invalid login response structure');
       }
     } catch (error) {
       console.error('Login error:', error);
