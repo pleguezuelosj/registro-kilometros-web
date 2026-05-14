@@ -28,9 +28,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (username: string, password: string) => {
     try {
-      // tRPC expects input as a query parameter with proper JSON format
+      // tRPC expects input as a properly URL-encoded query parameter
       const input = { username, password };
-      const inputParam = JSON.stringify(input);
+      const inputParam = encodeURIComponent(JSON.stringify(input));
       
       const response = await fetch(
         `https://registro-kilometros-app.onrender.com/api/trpc/auth.login?input=${inputParam}`,
